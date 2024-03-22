@@ -1,0 +1,297 @@
+What is Jenkins
+Jenkins is an open source continuous integration (CI) and continuous delivery (CD) tool written in Java.
+Jenkins used to bulid and deliver software projects
+jenkins is that it has a lot of plugins available
+jenkins is open source free and still very popular
+
+What is CI/CD
+Continuous integration (CI) of merging all devloper working copies
+Continuous delivery (CD) which teams produce software in short cycles, ensuring that the software can be reliably released at any time.
+
+Benefits
+Jenkins provides a feedback loop back to the devloper to fix build errors
+Research has shown that it's a lot quicker to have a devloper fix the error immediately
+Jenkins can publish every build of you software
+This build already has gone through automated testing
+When published and deployed to a dev/qa/staging server, you can advance the software devlopment lifecycle(SDLC) much quicker
+
+CI/CD within the SDLC
+
+Jenkins Alternatives
+Self-hosted
+  Drone CI (Continuous devlivery platform written in Go)
+  TeamCity (by Jebrains)
+Hosted (as a service)
+  Wercker
+  CircleCI
+  CodeShip
+  SemaphoreCI
+  Amazon AWS CI/CD tools
+  
+Jenkins Installation methods
+On the Cloud using docker (works on AWS, DigitalOcean, Googlecloud, Azure)
+www.virtualbox.org can run ubuntu in a VM locally
+www.vagrantup.com together with virtualbox can spin up a running ubuntu instance in minutes
+
+What is docker?
+Docker is the most popular container software
+Docker Engine
+The Docker runtime
+Software to make run docker images 	
+
+Docker Hub
+Online service to store and fetch docker images 
+Also allows you to build docker images online
+
+Isolation: you ship a binary with all the dependencies
+No more "it works on my machine, but not in production
+Close parity between dev, QA, and production environments
+Docker makes development teams able to ship faster
+You can run the same docker image, unchanged, on laptops, data center VMs, and Cloud providers.
+Docker uses Linux Containers for operating system-level isolation
+
+You can modify the jenkins container images by creating your own Dockerfile
+
+How to build a Node.js app
+step 1: install dependencies (npm install)
+Downloads and installs all the dependencies
+step 2: run tests (npm test)
+Runs all the NodeJS tests
+step 3: package the app in docker
+you can create a container that includes the Node.js binaries and your project
+step 4: distribute the docker image
+
+Infrastructure as code and automation
+Jenkins allows you to use a web UI to input all the bulid parameters
+This leads to:
+  No proper audit trail
+  No easy history of changes 
+  Segregation between Jenkins admins and devlopers
+  Users will have to contact a Jenkins administrator to make   changes
+  Long lead times for changes
+  Difficult to backup and restore 
+  
+The solution is to completely write jobs as code and save it in version control 
+Version Control gives you a history and audit trail
+Easy roll back to older versions of jobs and bulid instructions
+Allows operations to give more control to the devlopers
+Developers can bundle the jenkins build isturctions with their own project repository
+Devops should do: allow devlopers to control their own builds
+
+Job DSL and Jenkins Pipelines
+true DevOps tool within your software organization
+Jenkins Job DSL:- write code that creates and modifies jenkins jobs automatically	
+Jenkins Pipeline (Jenkinsfile):- Bulid the build parameters within the project
+Allow developers to change jenkins build parameters
+Enable audit trail, history, rollbacks using version control
+
+Jenkins Job DSL
+The Jenkins Job DSL is a plugin that allows you to define jobs in a programmatic form with minimal effort
+DSL stands for Domain Specific Language 
+jobs using a Groovy based language
+Groovy as a scripting language for a java platform
+The jenkins job DSL plugin was designed to make it easier to manage jobs
+
+Jenkins Pipelines:-
+Jenkins Pipelines allow you to write the Jenkins build steps in code
+1) Build steps:- allow you to write build(compile), test, deploy in code
+2) Code means you can put this code in version contorl
+
+It's about automating this cycle:-
+Developer Bulid -> Test -> Release Provision  Customer
+				     Deploy
+				    
+Jenkins Pipelines vs Job DSL
+How are Jenkins Pipelines different than the Jenkins Job DSL?
+They both have the capability to write all your CI/CD in code
+The difference is in implementation in Jenkins
+Jenkins Job DSLs creates new jobs based on the code you write
+The Jenkins Pipelines is a job type, you can create a jenkins pipeline job that will handle the build/test/deploymentof one project
+
+You could use Jenkins Job DSLs to create new pipeline jobs
+Until now we've only created freestyle projectswith the Jenkins Job DSL
+Another possibility would be to use an "Organization folder", which is a feature of Jenkins Pipelines to detect the project repositories removing the need to add new jobs 
+
+Jenkins Pipelines
+The pipeline is a specific job type that can be created using the jenkins UI or the jenkins job DSLs
+You can choose to write the pipeline in Jenkins DSL (declarative pipeline) or in groovy (scripted pipeline)
+
+Groovy is a scripting language for the java plateform
+Under the hood the jenkins DSL is interpreted by groovy
+
+Jenkins Pipeline Example:- 
+Node:- influence on what jenkins worker node the job will be ran (here: any node) 
+def: allows you to declare variables
+Stage: defines a building stage: build, test, or deploy
+	Conceptually distinct step
+	Used by other plugins in Jenkins later on to visualize the stages of a job
+	e.g. clean->bulid->test->publish
+	
+Docker pieline plugin:-
+The docker piepline plugin, let's you spin up any container within your pipeline
+I just used the same plugin in the previous demo, to build/push images
+You can not only build new containers, but also run existing containers
+you don't want to bundle devlopment tool with your production container, but you still want to run all stages in an isolated environment.
+build/test your application first with an existing conatiner with all the devlopment tools
+build a new container only the runtime environment.
+
+Spinning up new docker containers lets you bring in any new tool, easily
+You can specify exactly what dependencies you want, at any stage in the job
+You can start a database during the test stage to run tests on
+After the databse tests have been concluded, the container can be removed, together with all the data
+Next time you run a new database container during tests, you'll have a brand new container again
+This also works for multiple builds at the same time, every build has its own database container 
+
+Email Integration:-
+The goal is to alert the devloper of a broken build as soon as possible
+The earlier you give a devloper feedback 
+This increases the productivity of the devloper team
+The longer it takes for a devloper to know he needs to fix a bug, the more time to take resolve
+Every time when a developer commits a change in version control
+version control can either be pulled or pushed
+Pull: Jenkins polls the version control every x minutes
+Push: The version contol system will send a notification to Jenkins
+
+Slack Integration:-
+Slack is a chat and collaboration tool
+It can give you a realtime "war room" to collaborate on problems
+This is also called "ChatOps"
+ChatOps is a collaboration mode that connects people, tools processes, and automation in a transparant workflow
+It allows you to do conversation driven collaboration while having your tools integrated and keeping you up to date of the state of your systems
+
+GitHub / Bitbucket Integration
+Adevloper could then create a new repository for a new service, add a Jenkinsfile, and the project will automatically be built in Jenkins
+
+When using GitHub: the GitHub Branch Source plugin will scan all the branches and repositories in a Githuborganization and bulid them via Jenkins Pipelines
+
+When using Bitbucket: the Bitbucket branch source plugin can scan team/project folders and automatically projects
+
+JFrog Integration:-
+This resulting image is in Jenkins called "The artifact"
+It's the resulting binary from a build
+It can be a docker image, or a .jar file, a.tgz/.zip file, really anything
+These artifacts, the result of your build, you want to store somewhere
+JFrog Artifactory is a product that can store for you the artifacts resulting from a bulid
+JForg integration is done using a JFrog Plugin
+
+Custom API Integration:-
+Sometimes you want to integrate an API, but there is no plugin available
+Even if there is a plugin available, it can lack the features you want
+You might want to get more information from an endpoint (e.g. the full JSON from the request)
+You want to do a POST or PUT request on the API.
+one solution is to write your own Jenkins Plugin
+Another solution is to use functionality in the Jenkins Pipelines to do http requests
+This plugin can do a generic HTTP request on any API
+This is where groocy becomes handy, because groovy allows yo to do scripting within the Jenkinsfile
+
+Sonarqube:-
+Sonarqube continuously inspects you software project on code quality
+It can report on:
+Bugs (code issues)
+Vulnerabilities (Security issuses)
+Code smells (maintainability related issuses)	
+Technical debt (estimated time required to fix)
+Code coverage (test coverage of code)
+
+Sonarqube is a very popular piece of software that is often integrated with Jenkins
+
+In Jenkins it's just a bulid step
+the code needs to be scanned by the sonar-scanner
+the sonar-scanner sends its results to the Sonarqube server
+The sonarqube server needs to be installed
+Sonarqube server also uses a database to maintain its state
+
+One possible solution:
+Install databse and sonarqube  as a docker container on the master node
+We can use docker-compose to manage the containers
+Docker-compose is a handy tool from Docker that can spin up containers based on a container defination in yaml format
+
+Jenkins Slaves:-
+Currently only one node (one droplet) is hosting the jenkins web UI and doing all the builds
+In production environments, you typically want to host the jenkins web UI on a small master node, and have one or more worker nodes(jenkins Slave)
+Using worker nodes, you can easily expand your build capacity 
+Typically one worker has one or more bulid executors (building slots)
+If a Jenkins node has 2 exectors, only 2 builds can run in parallel 
+other builds will get queued
+
+Static or manual scaling:
+You can have more workers during working hours (or no workers outside working hours)
+You can add more workers ad-hoc, when necessary
+During periods when a lot of code is created
+During periods when devlopers have to wait long for their builds to be finished
+i.e. the jobs stay a long time in the queue
+
+Dynamic worker scaling:-
+required the Amazon EC2 Plugin
+Docker plugin
+Amazon ECS Plugin
+DigitalOcean Plugin
+
+Bulids can be executes on specific nodes
+Nodes can be labeled
+e.g. "windows64-node"
+Builds can then be configured to only run on nodes with a specific label
+This can be configured in the UI or using the Jenkinsfile
+node(label: 'windows64-node'){
+  stage('bulid'){
+    [...]
+  }
+}
+
+Jenkins Slaves Benefits
+Reduced cost
+replaceable
+run on a separate node that isn't affected by the CPU/Memory loads that builds generate
+UI always responsive
+respond to sudden surges in bulid
+Even with manual scaling you can quickly spin up a new machine as a jenkins lave
+
+Important to standardize you jenkins slave
+Don't manually install tools on the slaves
+Use Plugins to provide tools (NodeJS, Docker, Java, Maven)
+Use Docker to provide images that can bulid jobs, and use the Docker pipeline plugin to execute builds in a specific docker image
+
+Jenkins Slaves
+Master Node connects to slave over SSH
+Slave node connects to master over JNLP
+
+Blue Ocean
+Bluce Ocean is a new frontend for Jenkins
+Built from the ground up for Jenkins Pipeline
+Provided as plugin
+Still compatible with freestyle projects
+Should eventually replace the normal Jenkins UI over time
+
+New features:
+Sophisticated visualizations of the pipeline
+A pipeline editor
+Personalization
+More precision to quickly find what's wrong during an intervention
+Native integration for branch and pull requests
+
+SSH-Agent:-
+When we work with jenkins slaves, those slvae also need access to repositories
+A mistake i often see is that people customize the software  on their slave
+Private keys and credentials often end up on the slaves
+This makes it more difficult to scale out slaves: adding another slaves suddenly means manually copying over credentials and private keys
+For ssh keys, the solution is to use an ssh-agent
+SSh-agent run on a master and will contain the private keys
+This is a GitHub/Bitbucket private key to get access to the repositories
+ssh-agent uses the same keys stored within your credentials
+when we call ssh-agent within your jenkinsfile then you can use those ssh-agent to connect to a system or to execute a git commad
+
+Secutity:-
+Best practices for Jenkins:-
+Try to keep your Jenkins shielded from the internet: using firewall rules and behind a VPN	
+need to whitelist the bitbucket/github IP addresses for push requests
+security vulnerabilities discoverd that can be exploited without being logged so, it's better to keep jenkins shielded away from the internet
+
+Keep your Jenkins up-to-date
+Always upgrade to the latest version
+Use the Its (long term support) edition to be on a stable version
+if we using docker use the lts or latest tag, and do a docker (or docker-compose) pull and resyart container
+Also read the Changelog
+Always keep the plugins up to date
+Configure authentication / authorization
+keep in mind that administrators can decrypt credentials
+Use Onelogin (SAML)/LDAP/centralized directory for users
